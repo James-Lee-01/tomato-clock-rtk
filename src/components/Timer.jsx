@@ -66,33 +66,27 @@ const Timer = () => {
         <button
           onClick={handleStart}
           disabled={isRunning}
-          className={`border-solid border-2 p-1 rounded-md ${
-            isRunning ? "bg-gray-500 cursor-not-allowed" : ""
-          }`}
+          className='btn btn-sm btn-primary'
         >
           {isFinished ? "Restart" : "Start"}
         </button>
         <button
           onClick={handleStop}
           disabled={!isRunning}
-          className={`border-solid border-2 p-1 rounded-md ${
-            isRunning ? "" : "bg-gray-500 cursor-not-allowed"
-          }`}
+          className='btn btn-sm btn-primary'
         >
           Stop
         </button>
         <button
           onClick={handleReset}
           disabled={isRunning}
-          className={`border-solid border-2 p-1 rounded-md ${
-            isRunning ? "bg-gray-500 cursor-not-allowed" : ""
-          }`}
+          className='btn btn-sm btn-primary btn-outline'
         >
           Reset
         </button>
 
         <input
-          className='w-16 text-black'
+          className='input input-sm input-bordered input-primary w-16'
           type='number'
           onChange={handleSetTime}
           value={setTimer}
