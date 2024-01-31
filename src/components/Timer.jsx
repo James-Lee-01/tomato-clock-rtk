@@ -8,12 +8,19 @@ import {
   decrementTimer
 } from "../store/timerSlice"
 
+import { toggleSound } from "../store/soundSlice"
+import useSound from "use-sound"
+import notifySound from "../sounds/effect_notify.mp3"
+
+
 const Timer = () => {
   const dispatch = useDispatch()
   const { minutes, seconds, isRunning } = useSelector(state => state.timer)
   const [setTimer, setSetTimer] = useState(0)
   const [isFinished, setIsFinished] = useState(false);
   const timerRef = useRef(null)
+  const [play] = useSound(notifySound);
+  const isSoundEnabled = useSelector(state => state.sound.isSoundEnabled)
 
   useEffect(() => {
     if (isRunning) {
@@ -30,9 +37,13 @@ const Timer = () => {
       // 在時間結束時顯示對話框
       document.getElementById("my_modal_1").close();
       document.getElementById("my_modal_2").showModal();
+
+      if (isSoundEnabled) {
+        play(); //play notify sound
+      }
     }
     return () => clearInterval(timerRef.current)
-  }, [dispatch, isRunning, minutes, seconds, isFinished])
+  }, [dispatch, isRunning, minutes, seconds, isFinished, isSoundEnabled])
 
   const handleStart = () => {
     if (isFinished) {
@@ -77,9 +88,70 @@ const Timer = () => {
     }
   }
 
+  const SoundBtn = () => {
+    const handleToggleSound = () => {
+      dispatch(toggleSound())
+    }
+    
+    return (
+      <button onClick={handleToggleSound}>
+        <svg
+          xmlns='http://www.w3.org/2000/svg'
+          fill='none'
+          viewBox='0 0 24 24'
+          strokeWidth={1.5}
+          stroke='currentColor'
+          className='w-8 h-8'
+        >
+          <path
+            strokeLinecap='round'
+            strokeLinejoin='round'
+            d='M6.75 8.25l4.72-4.72a.75.75 0 0 1 1.28.53v15.88a.75.75 0 0 1-1.28.53l-4.72-4.72H4.51c-.88 0-1.704-.507-1.938-1.354A9.009 9.009 0 0 1 2.25 12c0-.83.112-1.633.322-2.396C2.806 8.756 3.63 8.25 4.51 8.25H6.75Z'
+            className='speaker'
+          />
+          <path
+            strokeLinecap='round'
+            strokeLinejoin='round'
+            d='M16.463 8.288a5.25 5.25 0 0 1 0 7.424'
+            className='arc2'
+          />
+          <path
+            strokeLinecap='round'
+            strokeLinejoin='round'
+            d='M19.114 5.636a9 9 0 0 1 0 12.728'
+            className='arc1'
+          />
+        </svg>
+      </button>
+    );
+  }
+  const MuteBtn = () => {
+    const handleToggleSound = () => {
+      dispatch(toggleSound())
+    }
+    
+    return (
+      <button onClick={handleToggleSound}>
+        <svg
+          xmlns='http://www.w3.org/2000/svg'
+          fill='none'
+          viewBox='0 0 24 24'
+          strokeWidth={1.5}
+          stroke='currentColor'
+          className='w-8 h-8'
+        >
+          <path
+            strokeLinecap='round'
+            strokeLinejoin='round'
+            d='M17.25 9.75 19.5 12m0 0 2.25 2.25M19.5 12l2.25-2.25M19.5 12l-2.25 2.25m-10.5-6 4.72-4.72a.75.75 0 0 1 1.28.53v15.88a.75.75 0 0 1-1.28.53l-4.72-4.72H4.51c-.88 0-1.704-.507-1.938-1.354A9.009 9.009 0 0 1 2.25 12c0-.83.112-1.633.322-2.396C2.806 8.756 3.63 8.25 4.51 8.25H6.75Z'
+          />
+        </svg>
+      </button>
+    );
+  }
+
   return (
     <div className='flex items-center justify-center flex-col gap-4'>
-
       {/* Countdown */}
       <div className='grid grid-flow-col text-center auto-cols-max'>
         <div className='flex flex-col'>
@@ -210,6 +282,9 @@ const Timer = () => {
           <button>close</button>
         </form>
       </dialog>
+
+      {/* sound */}
+      {isSoundEnabled ? <SoundBtn /> : <MuteBtn />}
     </div>
   );
 }
