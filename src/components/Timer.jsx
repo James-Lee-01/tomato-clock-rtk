@@ -11,16 +11,21 @@ import {
 import { toggleSound } from "../store/soundSlice"
 import useSound from "use-sound"
 import notifySound from "../sounds/effect_notify.mp3"
+import popSound from "../sounds/pop_sound.mp3"
 
 
 const Timer = () => {
   const dispatch = useDispatch()
   const { minutes, seconds, isRunning } = useSelector(state => state.timer)
+    const isSoundEnabled = useSelector((state) => state.sound.isSoundEnabled);
   const [setTimer, setSetTimer] = useState(0)
   const [isFinished, setIsFinished] = useState(false);
   const timerRef = useRef(null)
-  const [play] = useSound(notifySound);
-  const isSoundEnabled = useSelector(state => state.sound.isSoundEnabled)
+  const [play] = useSound(notifySound, { soundEnabled: isSoundEnabled });
+  const [popUp] = useSound(popSound, { soundEnabled: isSoundEnabled });
+  const [popDown] = useSound(popSound, {
+    playbackRate: 0.6, soundEnabled: isSoundEnabled,
+  });
 
   useEffect(() => {
     if (isRunning) {
@@ -37,10 +42,8 @@ const Timer = () => {
       // 在時間結束時顯示對話框
       document.getElementById("my_modal_1").close();
       document.getElementById("my_modal_2").showModal();
+      play(); //play notify sound
 
-      if (isSoundEnabled) {
-        play(); //play notify sound
-      }
     }
     return () => clearInterval(timerRef.current)
   }, [dispatch, isRunning, minutes, seconds, isFinished, isSoundEnabled])
@@ -76,6 +79,7 @@ const Timer = () => {
     } else {
       setSetTimer(setTimer + 1);
       dispatch(setTime({ minutes: setTimer + 1, seconds: 0 }));
+      popUp(); // pop up sound
     }
   }
 
@@ -85,6 +89,7 @@ const Timer = () => {
     } else {
       setSetTimer(setTimer - 1);
       dispatch(setTime({ minutes: setTimer - 1, seconds: 0 }));
+      popDown(); // pop down sound
     }
   }
 
