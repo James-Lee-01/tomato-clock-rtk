@@ -12,6 +12,9 @@ import { toggleSound } from "../store/soundSlice"
 import useSound from "use-sound"
 import notifySound from "../sounds/effect_notify.mp3"
 import popSound from "../sounds/pop_sound.mp3"
+import dingSound from "../sounds/ding_sound.mp3"
+import resetSound from "../sounds/reset_sound.mp3"
+import dripSound from "../sounds/drip_sound.mp3"
 
 
 const Timer = () => {
@@ -25,6 +28,12 @@ const Timer = () => {
   const [popUp] = useSound(popSound, { soundEnabled: isSoundEnabled });
   const [popDown] = useSound(popSound, {
     playbackRate: 0.6, soundEnabled: isSoundEnabled,
+  });
+  const [startNotify] = useSound(dingSound, { soundEnabled: isSoundEnabled });
+  const [resetNotify] = useSound(resetSound, { soundEnabled: isSoundEnabled });
+  const [stopNotify] = useSound(dripSound, {
+    playbackRate: 0.5,
+    soundEnabled: isSoundEnabled,
   });
 
   useEffect(() => {
@@ -53,15 +62,18 @@ const Timer = () => {
       dispatch(setTime({ minutes: setTimer, seconds: 0 }));
       setIsFinished(false)
     }
+    startNotify(); // play ding sound
     dispatch(startTimer())
     document.getElementById("my_modal_1").showModal();
   }
 
   const handleStop = () => {
+    stopNotify(); // play drip sound
     dispatch(stopTimer())
   }
 
   const handleReset = () => {
+    resetNotify(); // play reset sound
     setSetTimer(0)
     setIsFinished(false)
     dispatch(resetTimer())
@@ -74,12 +86,12 @@ const Timer = () => {
   }
 
   const handleIncrement = () => {
+    popUp(); // pop up sound
     if (Number.isNaN(setTimer)) {
       setSetTimer(1);
     } else {
       setSetTimer(setTimer + 1);
       dispatch(setTime({ minutes: setTimer + 1, seconds: 0 }));
-      popUp(); // pop up sound
     }
   }
 
