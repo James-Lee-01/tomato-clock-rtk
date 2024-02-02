@@ -19,6 +19,7 @@ import dripSound from "../sounds/drip_sound.mp3"
 import { SoundBtn, MuteBtn, MinusBtn, PlusBtn } from "../icons/Icons";
 import { StartModal, EndModal } from "./Modals"
 import Buttons from "./Buttons"
+import TimeSelect from "./TimeSelect"
 
 
 const Timer = () => {
@@ -43,6 +44,17 @@ const Timer = () => {
     playbackRate: 0.5,
     soundEnabled: isSoundEnabled,
   });
+
+  const timeOptions = [
+    { label: 'Set a time for: (min)', value: 0},
+    { label: '5 min', value: 5},
+    { label: '10 min', value: 10},
+    { label: '25 min', value: 25},
+    { label: '30 min', value: 30},
+    { label: '45 min', value: 45},
+    { label: '60 min', value: 60},
+    { label: '(Custom below)', value: setTimer, disabled: true},
+  ]
 
   useEffect(() => {
     if (isRunning) {
@@ -146,6 +158,10 @@ const Timer = () => {
           sec
         </div>
       </div>
+
+      {/* time select */}
+      <TimeSelect options={timeOptions} value={setTimer} onChange={handleSetTime} disabled={isRunning} />
+      
       {/* setTime group */}
       <div className='flex gap-4 items-center'>
         <MinusBtn onClick={handleDecrement} disabled={isRunning} />
@@ -154,16 +170,15 @@ const Timer = () => {
         <input
           className='input input-sm input-bordered input-primary w-24'
           type='number'
-          placeholder='mins.'
+          placeholder='min'
           onChange={handleSetTime}
           value={setTimer}
           min={0}
           disabled={isRunning}
         />
-        
+
         <PlusBtn onClick={handleIncrement} disabled={isRunning} />
       </div>
-
       <div className='flex items-center justify-center m-2 gap-2'>
         <Buttons
           onClick={handleStart}
@@ -178,13 +193,10 @@ const Timer = () => {
           isOutline
         />
       </div>
-
       {/* start modal */}
       <StartModal id='my_modal_1' />
-
       {/* end modal and toast */}
       <EndModal id='my_modal_2' />
-
       {/* sound control */}
       {isSoundEnabled ? (
         <SoundBtn onClick={handleToggleSound} />
