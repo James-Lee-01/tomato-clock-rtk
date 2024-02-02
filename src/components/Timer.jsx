@@ -16,14 +16,22 @@ import dingSound from "../sounds/ding_sound.mp3"
 import resetSound from "../sounds/reset_sound.mp3"
 import dripSound from "../sounds/drip_sound.mp3"
 
+import { SoundBtn, MuteBtn, MinusBtn, PlusBtn } from "../icons/Icons";
+import { StartModal, EndModal } from "./Modals"
+import Buttons from "./Buttons"
+
 
 const Timer = () => {
   const dispatch = useDispatch()
+
   const { minutes, seconds, isRunning } = useSelector(state => state.timer)
     const isSoundEnabled = useSelector((state) => state.sound.isSoundEnabled);
+
   const [setTimer, setSetTimer] = useState(0)
   const [isFinished, setIsFinished] = useState(false);
+
   const timerRef = useRef(null)
+
   const [play] = useSound(notifySound, { soundEnabled: isSoundEnabled });
   const [popUp] = useSound(popSound, { soundEnabled: isSoundEnabled });
   const [popDown] = useSound(popSound, {
@@ -105,67 +113,10 @@ const Timer = () => {
     }
   }
 
-  const SoundBtn = () => {
-    const handleToggleSound = () => {
-      dispatch(toggleSound())
-    }
-    
-    return (
-      <button onClick={handleToggleSound}>
-        <svg
-          xmlns='http://www.w3.org/2000/svg'
-          fill='none'
-          viewBox='0 0 24 24'
-          strokeWidth={1.5}
-          stroke='currentColor'
-          className='w-8 h-8'
-        >
-          <path
-            strokeLinecap='round'
-            strokeLinejoin='round'
-            d='M6.75 8.25l4.72-4.72a.75.75 0 0 1 1.28.53v15.88a.75.75 0 0 1-1.28.53l-4.72-4.72H4.51c-.88 0-1.704-.507-1.938-1.354A9.009 9.009 0 0 1 2.25 12c0-.83.112-1.633.322-2.396C2.806 8.756 3.63 8.25 4.51 8.25H6.75Z'
-            className='speaker'
-          />
-          <path
-            strokeLinecap='round'
-            strokeLinejoin='round'
-            d='M16.463 8.288a5.25 5.25 0 0 1 0 7.424'
-            className='arc2'
-          />
-          <path
-            strokeLinecap='round'
-            strokeLinejoin='round'
-            d='M19.114 5.636a9 9 0 0 1 0 12.728'
-            className='arc1'
-          />
-        </svg>
-      </button>
-    );
-  }
-  const MuteBtn = () => {
-    const handleToggleSound = () => {
-      dispatch(toggleSound())
-    }
-    
-    return (
-      <button onClick={handleToggleSound}>
-        <svg
-          xmlns='http://www.w3.org/2000/svg'
-          fill='none'
-          viewBox='0 0 24 24'
-          strokeWidth={1.5}
-          stroke='currentColor'
-          className='w-8 h-8'
-        >
-          <path
-            strokeLinecap='round'
-            strokeLinejoin='round'
-            d='M17.25 9.75 19.5 12m0 0 2.25 2.25M19.5 12l2.25-2.25M19.5 12l-2.25 2.25m-10.5-6 4.72-4.72a.75.75 0 0 1 1.28.53v15.88a.75.75 0 0 1-1.28.53l-4.72-4.72H4.51c-.88 0-1.704-.507-1.938-1.354A9.009 9.009 0 0 1 2.25 12c0-.83.112-1.633.322-2.396C2.806 8.756 3.63 8.25 4.51 8.25H6.75Z'
-          />
-        </svg>
-      </button>
-    );
-  }
+  const handleToggleSound = () => {
+    dispatch(toggleSound());
+  };
+  
 
   return (
     <div className='flex items-center justify-center flex-col gap-4'>
@@ -195,26 +146,10 @@ const Timer = () => {
           sec
         </div>
       </div>
-
       {/* setTime group */}
       <div className='flex gap-4 items-center'>
-        {/* minus button */}
-        <button
-          className='btn btn-circle btn-primary btn-outline btn-xs'
-          onClick={handleDecrement}
-          disabled={isRunning}
-        >
-          <svg
-            xmlns='http://www.w3.org/2000/svg'
-            fill='none'
-            viewBox='0 0 24 24'
-            strokeWidth={1.5}
-            stroke='currentColor'
-            className='w-4 h-4'
-          >
-            <path strokeLinecap='round' strokeLinejoin='round' d='M5 12h14' />
-          </svg>
-        </button>
+        <MinusBtn onClick={handleDecrement} disabled={isRunning} />
+
         {/* time input */}
         <input
           className='input input-sm input-bordered input-primary w-24'
@@ -225,83 +160,37 @@ const Timer = () => {
           min={0}
           disabled={isRunning}
         />
-        {/* add button */}
-        <button
-          className='btn btn-circle btn-primary btn-outline btn-xs'
-          onClick={handleIncrement}
-          disabled={isRunning}
-        >
-          <svg
-            xmlns='http://www.w3.org/2000/svg'
-            fill='none'
-            viewBox='0 0 24 24'
-            strokeWidth={1.5}
-            stroke='currentColor'
-            className='w-4 h-4'
-          >
-            <path
-              strokeLinecap='round'
-              strokeLinejoin='round'
-              d='M12 4.5v15m7.5-7.5h-15'
-            />
-          </svg>
-        </button>
+        
+        <PlusBtn onClick={handleIncrement} disabled={isRunning} />
       </div>
 
       <div className='flex items-center justify-center m-2 gap-2'>
-        <button
+        <Buttons
           onClick={handleStart}
           disabled={isRunning}
-          className='btn btn-sm btn-primary'
-        >
-          {isFinished ? "Restart" : "Start"}
-        </button>
-        <button
-          onClick={handleStop}
-          disabled={!isRunning}
-          className='btn btn-sm btn-primary'
-        >
-          Stop
-        </button>
-        <button
+          content={isFinished ? "Restart" : "Start"}
+        />
+        <Buttons onClick={handleStop} disabled={!isRunning} content='Stop' />
+        <Buttons
           onClick={handleReset}
           disabled={isRunning}
-          className='btn btn-sm btn-primary btn-outline'
-        >
-          Reset
-        </button>
+          content='Reset'
+          isOutline
+        />
       </div>
 
       {/* start modal */}
-      <dialog id='my_modal_1' className='modal'>
-        <div className='modal-box'>
-          <h3 className='font-bold text-xl'>Keep it up!</h3>
-          <p className='py-4 italic'>
-            Don’t watch the clock; do what it does. Keep going.
-          </p>
-        </div>
-        <form method='dialog' className='modal-backdrop'>
-          <button>close</button>
-        </form>
-      </dialog>
+      <StartModal id='my_modal_1' />
 
       {/* end modal and toast */}
-      <dialog id='my_modal_2' className='modal'>
-        <div className='toast toast-top end-auto whitespace-normal sm:min-w-max'>
-          <div className='alert alert-success flex flex-col items-start gap-0'>
-            <h3 className='font-bold text-xl'>You&apos;re Great!</h3>
-            <p className='py-2 italic'>
-              Energy and persistence conquer all things.
-            </p>
-          </div>
-        </div>
-        <form method='dialog' className='modal-backdrop'>
-          <button>close</button>
-        </form>
-      </dialog>
+      <EndModal id='my_modal_2' />
 
-      {/* sound */}
-      {isSoundEnabled ? <SoundBtn /> : <MuteBtn />}
+      {/* sound control */}
+      {isSoundEnabled ? (
+        <SoundBtn onClick={handleToggleSound} />
+      ) : (
+        <MuteBtn onClick={handleToggleSound} />
+      )}
     </div>
   );
 }
