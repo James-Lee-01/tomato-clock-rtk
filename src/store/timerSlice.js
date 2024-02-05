@@ -8,6 +8,7 @@ const timerSlice = createSlice({
     seconds: 0, // 初始秒數
     isRunning: false, // 是否正在計時
     setTimer: 0, // 設定的計時時間
+    isFinished: false, // 是否完成倒數
   },
   reducers:{
     setTime: (state, action) => {
@@ -35,9 +36,12 @@ const timerSlice = createSlice({
     },
     setSetTimer: (state, action) => {
       state.setTimer = action.payload;
+    },
+    setIsFinished: (state, action) => {
+      state.isFinished = action.payload;
     }
   }
 })
 
-export const {setTime, startTimer, stopTimer, resetTimer, decrementTimer, incrementTimer, startCountUp,setSetTimer} = timerSlice.actions
+export const {setTime, startTimer, stopTimer, resetTimer, decrementTimer, incrementTimer, startCountUp, setSetTimer, setIsFinished} = timerSlice.actions
 export default timerSlice.reducer

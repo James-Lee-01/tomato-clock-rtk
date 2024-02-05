@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from "react"
+import { useEffect, useRef } from "react"
 import { useDispatch, useSelector } from "react-redux"
 import {
   setTime,
@@ -6,7 +6,8 @@ import {
   stopTimer,
   resetTimer,
   decrementTimer,
-  setSetTimer
+  setSetTimer,
+  setIsFinished,
 } from "../store/timerSlice"
 
 import { toggleSound } from "../store/soundSlice"
@@ -26,11 +27,8 @@ import TimeSelect from "./TimeSelect"
 const Timer = () => {
   const dispatch = useDispatch()
 
-  const { minutes, seconds, isRunning, setTimer } = useSelector(state => state.timer)
+  const { minutes, seconds, isRunning, setTimer, isFinished } = useSelector(state => state.timer)
     const isSoundEnabled = useSelector((state) => state.sound.isSoundEnabled);
-
-  // const [setTimer, setSetTimer] = useState(0)
-  const [isFinished, setIsFinished] = useState(false);
 
   const timerRef = useRef(null)
 
@@ -67,7 +65,7 @@ const Timer = () => {
     }
 
     if (minutes === 0 && seconds === 0 && isRunning) {
-      setIsFinished(true);
+      dispatch(setIsFinished(true));
       dispatch(stopTimer());
       // 在時間結束時顯示對話框
       document.getElementById("my_modal_1").close();
@@ -75,12 +73,13 @@ const Timer = () => {
       play(); //play notify sound
     }
     return () => clearInterval(timerRef.current)
-  }, [dispatch, isRunning, minutes, seconds, isFinished, isSoundEnabled])
+  }, [dispatch, isRunning, minutes, seconds, isSoundEnabled])
 
   const handleStart = () => {
     if (isFinished) {
       dispatch(setTime({ minutes: setTimer, seconds: 0 }));
-      setIsFinished(false)
+      dispatch(setIsFinished(false));
+
     }
     startNotify(); // play ding sound
     dispatch(startTimer())
@@ -94,15 +93,13 @@ const Timer = () => {
 
   const handleReset = () => {
     resetNotify(); // play reset sound
-    // setSetTimer(0)
     dispatch(setSetTimer(0));
-    setIsFinished(false)
+    dispatch(setIsFinished(false));
     dispatch(resetTimer())
   }
 
   const handleSetTime = (e) => {
     const newMinutes = parseInt(e.target.value, 10)
-    // setSetTimer(newMinutes)
     dispatch(setSetTimer(newMinutes))
     dispatch(setTime({ minutes: newMinutes, seconds: 0 }));
   }
@@ -110,10 +107,8 @@ const Timer = () => {
   const handleIncrement = () => {
     popUp(); // pop up sound
     if (Number.isNaN(setTimer)) {
-      // setSetTimer(1);
       dispatch(setSetTimer(1));
     } else {
-      // setSetTimer(setTimer + 1);
       dispatch(setSetTimer(setTimer + 1));
       dispatch(setTime({ minutes: setTimer + 1, seconds: 0 }));
     }
@@ -121,10 +116,8 @@ const Timer = () => {
 
   const handleDecrement = () => {
     if (Number.isNaN(setTimer) || setTimer === 0) {
-      // setSetTimer(0);
       dispatch(setSetTimer(0));
     } else {
-      // setSetTimer(setTimer - 1);
       dispatch(setSetTimer(setTimer - 1));
       dispatch(setTime({ minutes: setTimer - 1, seconds: 0 }));
       popDown(); // pop down sound
