@@ -5,7 +5,8 @@ import {
   startTimer,
   stopTimer,
   resetTimer,
-  decrementTimer
+  decrementTimer,
+  setSetTimer
 } from "../store/timerSlice"
 
 import { toggleSound } from "../store/soundSlice"
@@ -25,15 +26,15 @@ import TimeSelect from "./TimeSelect"
 const Timer = () => {
   const dispatch = useDispatch()
 
-  const { minutes, seconds, isRunning } = useSelector(state => state.timer)
+  const { minutes, seconds, isRunning, setTimer } = useSelector(state => state.timer)
     const isSoundEnabled = useSelector((state) => state.sound.isSoundEnabled);
 
-  const [setTimer, setSetTimer] = useState(0)
+  // const [setTimer, setSetTimer] = useState(0)
   const [isFinished, setIsFinished] = useState(false);
 
   const timerRef = useRef(null)
 
-  const [play] = useSound(notifySound, { soundEnabled: isSoundEnabled });
+  const [play] = useSound(notifySound, { soundEnabled: isSoundEnabled, volume: 1.5 });
   const [popUp] = useSound(popSound, { soundEnabled: isSoundEnabled });
   const [popDown] = useSound(popSound, {
     playbackRate: 0.6, soundEnabled: isSoundEnabled,
@@ -72,7 +73,6 @@ const Timer = () => {
       document.getElementById("my_modal_1").close();
       document.getElementById("my_modal_2").showModal();
       play(); //play notify sound
-
     }
     return () => clearInterval(timerRef.current)
   }, [dispatch, isRunning, minutes, seconds, isFinished, isSoundEnabled])
@@ -94,32 +94,38 @@ const Timer = () => {
 
   const handleReset = () => {
     resetNotify(); // play reset sound
-    setSetTimer(0)
+    // setSetTimer(0)
+    dispatch(setSetTimer(0));
     setIsFinished(false)
     dispatch(resetTimer())
   }
 
   const handleSetTime = (e) => {
     const newMinutes = parseInt(e.target.value, 10)
-    setSetTimer(newMinutes)
+    // setSetTimer(newMinutes)
+    dispatch(setSetTimer(newMinutes))
     dispatch(setTime({ minutes: newMinutes, seconds: 0 }));
   }
 
   const handleIncrement = () => {
     popUp(); // pop up sound
     if (Number.isNaN(setTimer)) {
-      setSetTimer(1);
+      // setSetTimer(1);
+      dispatch(setSetTimer(1));
     } else {
-      setSetTimer(setTimer + 1);
+      // setSetTimer(setTimer + 1);
+      dispatch(setSetTimer(setTimer + 1));
       dispatch(setTime({ minutes: setTimer + 1, seconds: 0 }));
     }
   }
 
   const handleDecrement = () => {
     if (Number.isNaN(setTimer) || setTimer === 0) {
-      setSetTimer(0);
+      // setSetTimer(0);
+      dispatch(setSetTimer(0));
     } else {
-      setSetTimer(setTimer - 1);
+      // setSetTimer(setTimer - 1);
+      dispatch(setSetTimer(setTimer - 1));
       dispatch(setTime({ minutes: setTimer - 1, seconds: 0 }));
       popDown(); // pop down sound
     }

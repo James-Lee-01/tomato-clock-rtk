@@ -7,6 +7,7 @@ const timerSlice = createSlice({
     minutes: 0, // 初始分鐘
     seconds: 0, // 初始秒數
     isRunning: false, // 是否正在計時
+    setTimer: 0, // 設定的計時時間
   },
   reducers:{
     setTime: (state, action) => {
@@ -32,8 +33,11 @@ const timerSlice = createSlice({
         state.seconds = 59;
       }
     },
+    setSetTimer: (state, action) => {
+      state.setTimer = action.payload;
+    }
   }
 })
 
-export const {setTime, startTimer, stopTimer, resetTimer, decrementTimer, incrementTimer, startCountUp,} = timerSlice.actions
+export const {setTime, startTimer, stopTimer, resetTimer, decrementTimer, incrementTimer, startCountUp,setSetTimer} = timerSlice.actions
 export default timerSlice.reducer
