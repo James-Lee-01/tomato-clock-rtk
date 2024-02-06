@@ -134,7 +134,7 @@ const Timer = () => {
       {/* Countdown */}
       <div className='grid grid-flow-col text-center auto-cols-max'>
         <div className='flex flex-col'>
-          <span className='countdown font-mono text-5xl'>
+          <div className='countdown font-mono text-5xl'>
             <span
               style={{
                 "--value": Number.isNaN(minutes)
@@ -142,18 +142,18 @@ const Timer = () => {
                   : minutes.toString().padStart(2, "0"),
               }}
             ></span>
-          </span>
+          </div>
           min
         </div>
         <div className='flex flex-col'>
           <span className='font-mono text-5xl'>:</span>
         </div>
         <div className='flex flex-col'>
-          <span className='countdown font-mono text-5xl'>
+          <div className='countdown font-mono text-5xl'>
             <span
               style={{ "--value": seconds.toString().padStart(2, "0") }}
             ></span>
-          </span>
+          </div>
           sec
         </div>
       </div>
