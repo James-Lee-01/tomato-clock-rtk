@@ -1,5 +1,7 @@
 # Pomodoro timer 專注進行鐘
 ### 專案連結：[pomodoro-clock-rtk.vercel.app](https://pomodoro-clock-rtk.vercel.app/)
+#### 近期更新：
+- #####  2024.02.21 - 滑鼠點擊產生火花特效。
 
 <img src="public/screenshots/Home.png" alt="Pomodoro timer" width="80%">
 
